@@ -113,5 +113,5 @@ if __name__ == "__main__":
     config_template["model"]["n_speakers"] = n_speakers
     config_template["spk"] = spk_dict
     print("Writing configs/config.json")
-    with open("configs/config.json", "w") as f:
-        json.dump(config_template, f, indent=2)
+    with open("configs/config.json", "w", encoding="utf8") as f:
+        json.dump(config_template, f, indent=2, ensure_ascii=False)
