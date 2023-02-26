@@ -14,16 +14,18 @@ from inference.infer_tool import Svc
 logging.getLogger('numba').setLevel(logging.WARNING)
 chunks_dict = infer_tool.read_temp("inference/chunks_temp.json")
 
-model_path = "logs/32k/G_29000.pth"
+version = 44000
+
+model_path = f"logs/32k/G_{version}.pth"
 config_path = "configs/config.json"
 svc_model = Svc(model_path, config_path)
 infer_tool.mkdir(["raw", "results"])
 
 # 支持多个wav文件，放在raw文件夹下
-clean_names = ["kami-32k"]
+clean_names = ["eyes"]
 trans = [0]  # 音高调整，支持正负（半音）
 spk_list = ['灯織']  # 每次同时合成多语者音色
-slice_db = -40  # 默认-40，嘈杂的音频可以-30，干声保留呼吸可以-50
+slice_db = -50  # 默认-40，嘈杂的音频可以-30，干声保留呼吸可以-50
 wav_format = 'wav'  # 音频输出格式
 
 infer_tool.fill_a_to_b(trans, clean_names)
@@ -61,5 +63,5 @@ for clean_name, tran in zip(clean_names, trans):
                 _audio = out_audio.cpu().numpy()
             audio.extend(list(_audio))
 
-        res_path = f'./results/{clean_name}_{tran}key_{spk}.{wav_format}'
+        res_path = f'./results/{clean_name}_{tran}key_{spk}_{version}_{slice_db}.{wav_format}'
         soundfile.write(res_path, audio, svc_model.target_sample, format=wav_format)
